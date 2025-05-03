@@ -3,11 +3,13 @@ const { useState } = React;
 function App() {
   const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const API_KEY = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+  const API_KEY = 'f16f8a4bbd431a43cfb054282c9e88d4';
 
   const fetchWeather = async () => {
     if (!city) return;
+    setLoading(true);
     try {
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
@@ -22,6 +24,8 @@ function App() {
     } catch (err) {
       console.error(err);
       alert('Error fetching weather data.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,7 +39,9 @@ function App() {
           value={city}
           onChange={(e) => setCity(e.target.value)}
         />
-        <button onClick={fetchWeather}>Get Weather</button>
+        <button onClick={fetchWeather} disabled={loading}>
+          {loading ? 'Loading...' : 'Get Weather'}
+        </button>
       </div>
 
       {weather && (
